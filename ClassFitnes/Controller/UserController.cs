@@ -2,6 +2,8 @@
 using ClassFitnes.Model;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClassFitnes.Controller
 {
@@ -13,27 +15,53 @@ namespace ClassFitnes.Controller
     {/// <summary>
     /// Пользователь.
     /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+
+        public User CurrentUser { get; }
         /// <summary>
         /// Создание нового контроллера пользователя.
         /// </summary>
         /// <param name="user"></param>
-        public UserController(string username, string genderName, DateTime birthDay,double weight, double height)
+        public UserController(string userName)
         {
-            var gender = new Gender(genderName);
-            User = new User(username, gender, birthDay, weight, height);           
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("Поле не может быть пустым",nameof(userName));
+            }
+            Users = new List<User>();
+
+            CurrentUser = Users.SingleOrDefault(e=>e.Name ==userName);
+            if (CurrentUser == null)
+            {
+                if (string.IsNullOrWhiteSpace(userName))
+                {
+                    throw new ArgumentNullException("Поле не может быть пустым", nameof(userName));
+                }
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                Save();
+            }
+         
         }
-        public UserController()
+        /// <summary>
+        /// Получить списпок пользователей.
+        /// </summary>
+        /// <returns></returns>
+        private List<User> GetUsersDate()
         {
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is User user) // десериализация пользователя  
+                if (formatter.Deserialize(fs) is List<User> users) // десериализация пользователя  
                 {
-                    User = user;
+                    return users;
+                }
+                else
+                {
+                    return new List<User>();
                 }
             };
-
+            
         }
 
         /// <summary>
@@ -44,7 +72,7 @@ namespace ClassFitnes.Controller
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.CreateNew))
             {
-                formatter.Serialize(fs, User);// сериализация пользователя
+                formatter.Serialize(fs, Users);// сериализация пользователя
             };
         }
         /// <summary>

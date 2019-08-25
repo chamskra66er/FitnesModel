@@ -29,6 +29,8 @@ namespace ClassFitnes.Model
         /// Рост.
         /// </summary>
         public double Height { get; set; }
+
+        public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
         public User(string name,
                         Gender gender,
                         DateTime birthDate,
@@ -66,9 +68,13 @@ namespace ClassFitnes.Model
             Weight = weight;
             Height = height;
         }
+        public User(string name)
+        {
+            Name = name;
+        }
         public override string ToString()
         {
-            return Name;
+            return Name + " " + Age;
         }
 
     }
