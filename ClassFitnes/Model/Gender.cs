@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ClassFitnes.Model
 {
-   public class Gender
+    [Serializable]
+    public class Gender
     {
         public string Name { get; }
         public Gender(string name) {

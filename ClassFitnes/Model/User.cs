@@ -8,7 +8,9 @@ namespace ClassFitnes.Model
 {/// <summary>
 /// Пользователь.
 /// </summary>
-    class User
+
+   [Serializable]
+   public class User
     {
         public string Name { get; }
         /// <summary>
