@@ -18,6 +18,7 @@ namespace ClassFitnes.Controller
         public List<User> Users { get; }
 
         public User CurrentUser { get; }
+        public bool IsNewUser { get; } = false;
         /// <summary>
         /// Создание нового контроллера пользователя.
         /// </summary>
@@ -28,16 +29,13 @@ namespace ClassFitnes.Controller
             {
                 throw new ArgumentNullException("Поле не может быть пустым",nameof(userName));
             }
-            Users = new List<User>();
+            Users = GetUsersData();
 
-            CurrentUser = Users.SingleOrDefault(e=>e.Name ==userName);
+            CurrentUser = Users.SingleOrDefault(u => u.Name ==userName);
             if (CurrentUser == null)
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                {
-                    throw new ArgumentNullException("Поле не может быть пустым", nameof(userName));
-                }
+            {       
                 CurrentUser = new User(userName);
+                IsNewUser = true;
                 Users.Add(CurrentUser);
                 Save();
             }
@@ -47,7 +45,7 @@ namespace ClassFitnes.Controller
         /// Получить списпок пользователей.
         /// </summary>
         /// <returns></returns>
-        private List<User> GetUsersDate()
+        private List<User> GetUsersData()
         {
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
@@ -64,13 +62,42 @@ namespace ClassFitnes.Controller
             
         }
 
+        public void SetNewUserData(string genderName,DateTime birthDate,double weight=1,double height = 1)//Знач.по умолч.
+        {
+            #region
+            //if (genderName == null)
+            //{
+            //    throw new ArgumentNullException("Пол не может быть пустым", nameof(genderName));
+            //}
+            //if (genderName == null)
+            //{ }
+            //if (birthDate < DateTime.Parse("01.01.1919") || birthDate >= DateTime.Now)
+            //{
+            //    throw new ArgumentException("Неверная дата рождения", nameof(birthDate));
+            //}
+            //if (weight <= 0)
+            //{
+            //    throw new ArgumentException("Неверный вес", nameof(weight));
+
+            //}
+            //if (height <= 0)
+            //{
+            //    throw new ArgumentException("Неверный рост", nameof(height));
+            //}
+            #endregion
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
+        }
         /// <summary>
         /// Сохранить данные пользоватля.
         /// </summary>
         public void Save()
         {
             var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.CreateNew))
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
                 formatter.Serialize(fs, Users);// сериализация пользователя
             };
