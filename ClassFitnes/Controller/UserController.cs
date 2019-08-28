@@ -11,7 +11,7 @@ namespace ClassFitnes.Controller
     /// <summary>
     /// Контроллер пользователя.
     /// </summary>
-    public class UserController
+    public class UserController:ControllerBase
     {/// <summary>
     /// Пользователь.
     /// </summary>
@@ -47,18 +47,7 @@ namespace ClassFitnes.Controller
         /// <returns></returns>
         private List<User> GetUsersData()
         {
-            var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length>0 && formatter.Deserialize(fs) is List<User> users) // десериализация пользователя  
-                {
-                    return users;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-            };
+            return Load<List<User>>("users.dat") ?? new List<User>();           
             
         }
 
@@ -96,11 +85,7 @@ namespace ClassFitnes.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Users);// сериализация пользователя
-            };
+            Save("users.dat", Users);           
         }
         /// <summary>
         /// Получить данные пользователя.

@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using ClassFitnes.Model;
+
+namespace ClassFitnes.Controller
+{
+   public class EatingController:ControllerBase
+    {
+        private User user;
+        public List<Food> Foods { get; }
+        public Eating Eating { get; }
+        public EatingController(User us)
+        {
+            user = us ?? throw new ArgumentNullException("Поле не может быть пустым",nameof(us));
+            Foods = GetAllFoods();
+            Eating = GetEating();
+        }       
+        public void Add(Food food, double weight)
+        {
+            var product = Foods.SingleOrDefault(f => f.Name == food.Name);
+            if (product == null)
+            {
+                Foods.Add(food);
+                Eating.Add(food, weight);
+                Save();
+            }
+            else
+            {
+                Eating.Add(product,weight);
+                Save();
+            }
+        }
+
+        private Eating GetEating()
+        {
+            return Load<Eating>("eatings.dat") ?? new Eating(user);
+        }
+
+        private List<Food> GetAllFoods()
+        {
+            return Load<List<Food>>("foods.dat")?? new List<Food>();          
+        }
+        private void Save()
+        {
+            Save("foods.dat", Foods);
+            Save("eatings.dat", Eating);
+        }
+    }
+}
