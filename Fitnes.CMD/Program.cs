@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Resources;
 using ClassFitnes.Controller;
 using ClassFitnes.Model;
 
@@ -8,7 +10,28 @@ namespace Fitnes.CMD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите имя пользователя");
+            Console.WriteLine("Выбрать нужную локализацию / Choise need location \n R - ru   /   E - en");
+            CultureInfo culture = null;
+        sw:
+            var key1 = Console.ReadKey();
+            switch (key1.Key)
+            {
+                case ConsoleKey.R:
+                    culture = CultureInfo.CreateSpecificCulture("ru-ru");
+                    Console.WriteLine("\n");
+                    break;
+                case ConsoleKey.E:
+                    culture = CultureInfo.CreateSpecificCulture("en-us");
+                    Console.WriteLine("\n");
+                    break;
+                default:
+                    goto sw;
+            }
+            //var culture = CultureInfo.CreateSpecificCulture("ru-ru");
+            var resourceManager = new ResourceManager("Fitnes.CMD.Languages.Messages",typeof(Program).Assembly); 
+
+            Console.WriteLine(resourceManager.GetString("Hello",culture)); 
+            Console.WriteLine(resourceManager.GetString("Input_name", culture));
             var name = Console.ReadLine();
             #region
             //Console.WriteLine("Введите пол пользователя");
@@ -27,24 +50,24 @@ namespace Fitnes.CMD
             var eatingController = new EatingController(userController.CurrentUser);
             if (userController.IsNewUser)
             {
-                Console.WriteLine("Введите пол пользователя");
+                Console.WriteLine(Languages.Messages.Input_gender);
                 var gender = Console.ReadLine();
 
-                Console.WriteLine("Введите дату рождения");
+                Console.WriteLine(resourceManager.GetString("dateBirthday", culture));
                 var dateBirthday = DateTime.Parse(Console.ReadLine());
 
-                Console.WriteLine("Введите вес");
+                Console.WriteLine(resourceManager.GetString("weight", culture));
                 var weight = double.Parse(Console.ReadLine());
 
-                Console.WriteLine("Введите рост");
+                Console.WriteLine(resourceManager.GetString("height", culture));
                 var height = double.Parse(Console.ReadLine());
                 userController.SetNewUserData(gender, dateBirthday, weight, height);
             }
 
 
             Console.WriteLine(userController.CurrentUser);
-            Console.WriteLine("Что вы хотите сделать?");
-            Console.WriteLine("A - прием пищи.\n");
+            Console.WriteLine(resourceManager.GetString("doing", culture));
+            Console.WriteLine(resourceManager.GetString("eating", culture));
             var key = Console.ReadKey();
             if (key.Key == ConsoleKey.A)
             {
@@ -61,11 +84,10 @@ namespace Fitnes.CMD
             Console.ReadLine();
             
 
-        }
-
+        }  
         private static (Food Food,double Weight) EnterEating()
         {
-            Console.Write("Введите имя продукта: ");
+            Console.Write("\nВведите имя продукта: ");
             var food = Console.ReadLine();
             Console.Write("Введите вес порции: ");
             var weight =Convert.ToDouble( Console.ReadLine() );
