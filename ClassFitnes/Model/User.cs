@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace ClassFitnes.Model
 {/// <summary>
-/// Пользователь.
-/// </summary>
+ /// Пользователь.
+ /// </summary>
 
-   [Serializable]
-   public class User
+    [Serializable]
+    public class User
     {
-        public string Name { get; }
+        public int Id { get; set; }      
+        public string Name { get; set; }
         /// <summary>
         /// Пол.
         /// </summary>

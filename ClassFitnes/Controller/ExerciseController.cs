@@ -21,17 +21,17 @@ namespace ClassFitnes.Controller
 
         private List<Activity> GaetAllActivities()
         {
-            return Load<List<Activity>>("activities.dat") ?? new List<Activity>();
+            return Load<Activity>() ?? new List<Activity>();
         }
 
         private List<Exercise> GetAllExercises()
         {
-            return Load<List<Exercise>>("exercises.dat") ?? new List<Exercise>();
+            return Load<Exercise>() ?? new List<Exercise>();
         }
         private void Save()
         {
-            Save("exercises.dat", Exercises);
-            Save("activities.dat", Activities);
+            Save(Exercises);
+            Save(Activities);
         }
         public void Add(Activity activity, DateTime begin, DateTime end)
         {

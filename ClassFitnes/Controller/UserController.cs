@@ -47,7 +47,7 @@ namespace ClassFitnes.Controller
         /// <returns></returns>
         private List<User> GetUsersData()
         {
-            return Load<List<User>>("users.dat") ?? new List<User>();           
+            return Load<User>() ?? new List<User>();           
             
         }
 
@@ -85,7 +85,7 @@ namespace ClassFitnes.Controller
         /// </summary>
         public void Save()
         {
-            Save("users.dat", Users);           
+            Save(Users);           
         }
         /// <summary>
         /// Получить данные пользователя.

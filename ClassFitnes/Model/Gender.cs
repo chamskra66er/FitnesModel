@@ -9,7 +9,8 @@ namespace ClassFitnes.Model
     [Serializable]
     public class Gender
     {
-        public string Name { get; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public Gender(string name) {
             if (string.IsNullOrWhiteSpace(name))
             {
